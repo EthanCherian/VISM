@@ -1,3 +1,6 @@
+.gitignore
 __*
 notes
-*/
+input/
+output/
+uploads/

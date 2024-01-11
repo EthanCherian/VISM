@@ -61,31 +61,24 @@ def getNotes(dom):
     # return a tuple for each note
     return zip(notesArr, intervalsArr, alterArr, durationArr)
 
-def convertMusicXML():
-    for filename in os.scandir("middle"):
-        if filename.is_file():
-            # parse musicxml file created in main
-            dom = parse("middle/" + filename.name)
+def convertMusicXML(musicxml_path, brf_output_path):
+    print("Parsing MusicXML...")
+    dom = parse(musicxml_path)
 
-            totalNotesArr = getNotes(dom)
-            
-            # print each note, for testing
-            # for n in totalNotesArr:
-            #     print(n)
+    totalNotesArr = getNotes(dom)
+    
+    print("Writing Braille...")
+    # open braille output file
+    with open(brf_output_path, "w+", encoding="utf-8") as f:
+        measures = 0
+        # write each note to braille
+        for note, octave, alter, duration in totalNotesArr:
+            # braille sheet music written in this order
+            f.write(convert[octave])
+            f.write(convert[alter])
+            f.write(convert[note + str(duration)])
 
-            print("Lastly, creating Braille file")
-            
-            # open braille output file
-            with open("output/" + filename.name[:-9] + ".brf", "w+", encoding="utf-8") as f:
-                measures = 0
-                # write each note to braille
-                for note, octave, alter, duration in totalNotesArr:
-                    # braille sheet music written in this order
-                    f.write(convert[octave])
-                    f.write(convert[alter])
-                    f.write(convert[note + str(duration)])
-
-                    # write a new line every measure
-                    measures += int(duration)
-                    if measures % 16 == 0:          # measures counted in intervals of 16
-                        f.write('\n')
+            # write a new line every measure
+            measures += int(duration)
+            if measures % 16 == 0:          # measures counted in intervals of 16
+                f.write('\n')
