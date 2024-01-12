@@ -23,6 +23,7 @@ brailles = [    '⠙','⠹','⠝','⠽',                # C1-8
                 '⠚','⠺','⠞','⠾',                # B1-8
                 '⠈','⠘','⠸','⠐','⠨','⠰','⠠',   # octave marks
                 '⠣','','⠩' ]                     # accidentals
+braille_dot = '⠄'                               # dot
 
 # map ASCII codes to Braille codes
 convert = {asciicodes[i]: brailles[i] for i in range(len(asciicodes))}
@@ -61,6 +62,11 @@ def getNotes(dom):
     # return a tuple for each note
     return zip(notesArr, intervalsArr, alterArr, durationArr)
 
+# used to determine when a dotted note is present
+def is_power_of_2(n):
+    # powers of 2 are greater than 0 and only have 1 bit set
+    return n > 0 and (n & (n - 1)) == 0
+
 def convertMusicXML(musicxml_path, brf_output_path):
     print("Parsing MusicXML...")
     dom = parse(musicxml_path)
@@ -76,9 +82,18 @@ def convertMusicXML(musicxml_path, brf_output_path):
             # braille sheet music written in this order
             f.write(convert[octave])
             f.write(convert[alter])
-            f.write(convert[note + str(duration)])
+
+            # need to get ASCII code in form A2, F8, etc. for conversion using dictionary
+            # dotted notes have a duration of 3, 6, 12, etc., so apply braille dot separately
+            dur = int(duration)
+            if is_power_of_2(dur):
+                f.write(convert[note + str(duration)])
+            else:
+                newdur = int(dur * 2 / 3)
+                f.write(convert[note + str(newdur)])
+                f.write(braille_dot)
 
             # write a new line every measure
-            measures += int(duration)
+            measures += dur
             if measures % 16 == 0:          # measures counted in intervals of 16
                 f.write('\n')
