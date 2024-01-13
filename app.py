@@ -1,4 +1,4 @@
-from flask import Flask, request, send_from_directory, render_template
+from flask import Flask, request, send_from_directory, render_template, redirect, url_for
 import os
 from main import convert_files
 
@@ -24,7 +24,7 @@ def upload_file():
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
             file.save(filepath)
             convert_files(filepath)  # Call the conversion function from main.py
-            return 'File successfully uploaded and converted.'
+            return redirect(url_for('list_files'))
 
     return render_template('upload.html')  # A simple HTML form for file upload
 
