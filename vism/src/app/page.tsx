@@ -8,9 +8,11 @@ const fetchData = async () => {
     console.log(data);
 };
 
-const onFileUpload = async (file: File) => {
+const onFileUpload = async (files: File[]) => {
     const formData = new FormData();
-    formData.append('file', file, file.name);
+    files.forEach(file => {
+        formData.append('files', file, file.name);      // append each uploaded file to request
+    })
 
     try {
         const response = await fetch('http://localhost:5000/upload', {

@@ -1,29 +1,29 @@
 import React, { useState } from 'react';
 
 interface FileUploaderProps {
-    onFileUpload: (file: File) => void;         // file upload handler
+    onFileUpload: (files: File[]) => void;         // file upload handler
 }
 
 const FileUploader: React.FC<FileUploaderProps> = ({ onFileUpload: handleUpload }) => {
-    const [file, setFile] = useState<File | null>(null);
+    const [files, setFiles] = useState<File[]>([]);
 
     const onFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        if (event.target.files && event.target.files[0]) {
-            setFile(event.target.files[0]);
+        if (event.target.files) {
+            setFiles(Array.from(event.target.files));
         }
     };
 
     const onFileUpload = async () => {
-        if (file) {
-            handleUpload(file);
+        if (files.length > 0) {
+            handleUpload(files);
         } else {
-            alert("Please select a file.");
+            alert("Please select some files.");
         }
     };
 
     return (
         <div>
-            <input type="file" onChange={onFileChange} />
+            <input type="file" multiple onChange={onFileChange} />
             <button onClick={onFileUpload}>Upload</button>
         </div>
     );
