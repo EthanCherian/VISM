@@ -21,7 +21,7 @@ const FileGrid: React.FC<FileGridProps> = ({ filePairs }) => {
                             <td className="border border-black p-4">{inputFileName}</td>
                             <td className="border border-black p-4">
                                 {outputPath ? (
-                                    <a href={`/download/${outputPath}`} download>{outputPath}</a>
+                                    <a href={`http://localhost:5000/download/${outputPath}`} download>{outputPath}</a>
                                 ) : (
                                     "Press Convert!"
                                 )}

@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
 import subprocess
@@ -71,6 +71,11 @@ def convert_xml():
             results.append({ 'filename': filename, 'error': str(e), 'success': False })
 
     return jsonify({ 'results': results }), 200
+
+@app.route('/download/<filename>', methods=['GET'])
+def download_file(filename):
+    print("Downloading file: " + filename)
+    return send_from_directory(app.config['OUTPUT_FOLDER'], filename)
 
 if __name__ == '__main__':
     app.run(debug=True)
