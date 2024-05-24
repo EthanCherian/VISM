@@ -1,28 +1,30 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 interface FileGridProps {
-    inputFiles: File[];  // Array of uploaded files passed as props
-    outputFiles?: File[];
+    filePairs: Record<string, string>;      // MSCZ file name => BRF file name
 }
 
-const FileGrid: React.FC<FileGridProps> = ({ inputFiles }) => {
+const FileGrid: React.FC<FileGridProps> = ({ filePairs }) => {
     return (
         <div>
             <h2>Uploaded Files</h2>
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                 <thead>
                     <tr>
-                        <th style={{ border: '1px solid black', padding: '8px' }}>File Name</th>
-                        <th style={{ border: '1px solid black', padding: '8px' }}>Results</th>
+                        <th className="border border-black p-4">File Name</th>
+                        <th className="border border-black p-4">Results</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {inputFiles.map((file, index) => (
+                    {Object.entries(filePairs).map(([inputFileName, outputPath], index) => (
                         <tr key={index}>
-                            <td style={{ border: '1px solid black', padding: '8px' }}>{file.name}</td>
-                            <td style={{ border: '1px solid black', padding: '8px' }}>
-                                {/* Placeholder for results */}
-                                Results will go here
+                            <td className="border border-black p-4">{inputFileName}</td>
+                            <td className="border border-black p-4">
+                                {outputPath ? (
+                                    <a href={`/download/${outputPath}`} download>{outputPath}</a>
+                                ) : (
+                                    "Press Convert!"
+                                )}
                             </td>
                         </tr>
                     ))}

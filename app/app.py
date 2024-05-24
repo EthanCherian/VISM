@@ -66,9 +66,9 @@ def convert_xml():
         brfpath = os.path.join(app.config['OUTPUT_FOLDER'], filename + ".brf")
         try:
             convertMusicXML(xmlpath, brfpath)
-            results.append({ 'filename': filename, 'result': brfpath, 'status': 'success' })
+            results.append({ 'filename': filename, 'result': brfpath, 'success': True })
         except Exception as e:
-            results.append({ 'filename': filename, 'error': str(e) })
+            results.append({ 'filename': filename, 'error': str(e), 'success': False })
 
     return jsonify({ 'results': results }), 200
 

@@ -5,11 +5,16 @@ import FileGrid from "@/components/file_grid";
 
 
 export default function Home() {
+    const [fileMap, setFileMap] = useState<Record<string, string>>({});
     const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
-    const [resultFiles, setResultFiles] = useState<File[]>([]);
+    const [resultNames, setResultNames] = useState<string[]>([]);
 
     const onFileUpload = async (files: File[]) => {
-        setUploadedFiles(prevFiles => [...prevFiles, ...files]);
+        const newEntries = files.reduce((acc, file) => {
+            acc[file.name] = null;      // set null result for each uploaded file
+            return acc;
+        }, {} as Record<string, string | null>);
+        setFileMap(prevMap => Object.assign({ ...prevMap, ...newEntries }));
 
         const formData = new FormData();
         files.forEach(file => {
@@ -64,6 +69,13 @@ export default function Home() {
             const result = await response.json();
             console.log(result);
             alert('Braille files made successfully!');
+
+            // isolate results that were successful
+            const successfulResults = result.results.filter((item: {success: boolean}) => item.success);
+            // isolate input and output filenames from these results
+            let inputs: string[] = successfulResults.map((item: {filename: string}) => item.filename + ".mscz");      // re-add .mscz extension
+            let outputs: string[] = successfulResults.map((item: {result: string}) => item.result.split('/')[1]);     // remove path
+            setFileMap(prevMap => Object.assign({ ...prevMap, ...Object.fromEntries(inputs.map((key, index) => [key, outputs[index]])) }));
         } catch (error) {
             console.error('Error: ', error);
             alert('Error creating BRF files');
@@ -76,10 +88,11 @@ export default function Home() {
             <FileUploader onFileUpload={onFileUpload}/>
             <br/>
             <br/>
-            <button onClick={() => convertMSCZ(uploadedFiles.map(file => file.name))}>Convert!</button>
+            {/* <button disabled={uploadedFiles.length == 0} onClick={() => convertMSCZ(uploadedFiles.map(file => file.name))}>Convert!</button> */}
+            <button disabled={Object.keys(fileMap).length == 0} onClick={() => convertMSCZ(Object.keys(fileMap))}>Convert!</button>
             <br/>
             <br/>
-            <FileGrid inputFiles={uploadedFiles}/>
+            <FileGrid filePairs={fileMap}/>
         </>
     );
 }
