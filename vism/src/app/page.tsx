@@ -3,11 +3,8 @@ import { useState } from "react";
 import FileUploader from "@/components/file_upload";
 import FileGrid from "@/components/file_grid";
 
-
 export default function Home() {
     const [fileMap, setFileMap] = useState<Record<string, string>>({});
-    const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
-    const [resultNames, setResultNames] = useState<string[]>([]);
 
     const onFileUpload = async (files: File[]) => {
         const newEntries = files.reduce((acc, file) => {
@@ -83,16 +80,31 @@ export default function Home() {
     }
 
     return (
-        <>
-            <h1 className="text-3xl font-bold underline">Hello world!</h1>
+        <div className="flex flex-col items-center justify-center">
+            <div className="text-3xl underline font-bold my-8">
+                Welcome to Visually Impaired Sheet Music! (VISM)
+            </div>
+
+            <div className="text-lg">
+                This page allows you to convert MuseScore (.mscz) files to Braille (.brf) files.
+                <ul className="list-disc list-inside my-6">
+                    <li className="mx-1">Upload your .mscz files</li>
+                    <li className="mx-1">Press "Convert!"</li>
+                    <li className="mx-1">Download resulting .brf files</li>
+                </ul>
+            </div>
+
             <FileUploader onFileUpload={onFileUpload}/>
-            <br/>
-            <br/>
-            {/* <button disabled={uploadedFiles.length == 0} onClick={() => convertMSCZ(uploadedFiles.map(file => file.name))}>Convert!</button> */}
-            <button disabled={Object.keys(fileMap).length == 0} onClick={() => convertMSCZ(Object.keys(fileMap))}>Convert!</button>
-            <br/>
-            <br/>
+
+            <button
+                // className="cursor-pointer m-6 px-4 py-2 bg-blue-500 hover:bg-blue-700 text-white font-bold rounded transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-110"
+                className={`${Object.keys(fileMap).length == 0 ? "cursor-not-allowed" : "cursor-pointer"} m-6 px-4 py-2 bg-blue-500 hover:bg-blue-700 text-white font-bold rounded transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-110`}
+                disabled={Object.keys(fileMap).length == 0} onClick={() => convertMSCZ(Object.keys(fileMap))}
+            >
+                Convert!
+            </button>
+
             <FileGrid filePairs={fileMap}/>
-        </>
+        </div>
     );
 }
