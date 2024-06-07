@@ -1,18 +1,24 @@
 'use client';
 import { useState } from "react";
-import Navbar from "@/components/navbar";
 import FileUploader from "@/components/file_upload";
 import FileGrid from "@/components/file_grid";
 
 export default function Home() {
-    const [fileMap, setFileMap] = useState<Record<string, string>>({});
+    const [fileMap, setFileMap] = useState<Record<string, string | null>>({});
+    const [loading, setLoading] = useState<boolean>(false);
 
     const onFileUpload = async (files: File[]) => {
-        const newEntries = files.reduce((acc, file) => {
-            acc[file.name] = null;      // set null result for each uploaded file
-            return acc;
-        }, {} as Record<string, string | null>);
-        setFileMap(prevMap => Object.assign({ ...prevMap, ...newEntries }));
+        setFileMap(prevMap => {
+            const newEntries = files.reduce((acc, file) => {
+                // Only add new entry if the file name does not exist in the previous map
+                if (!prevMap.hasOwnProperty(file.name)) {
+                    acc[file.name] = null;  // Set null result for each new uploaded file
+                }
+                return acc;
+            }, {} as Record<string, string | null>);
+    
+            return { ...prevMap, ...newEntries };
+        });
 
         const formData = new FormData();
         files.forEach(file => {
@@ -34,6 +40,15 @@ export default function Home() {
     }
 
     const convertMSCZ = async (filenames: string[]) => {
+        if (filenames.length === 0) {
+            alert('Upload some files to convert!');
+            return;
+        }
+
+        setLoading(true);
+        // find any previously uploaded files and ignore
+        filenames = filenames.filter((filename) => !fileMap[filename]);
+        
         try {
             const response = await fetch('http://localhost:5000/convert/mscz', {
                 method: 'POST',
@@ -55,7 +70,8 @@ export default function Home() {
     }
     
     const convertXML = async (filenames: string[]) => {
-        console.log("Converting MusicXML files...");
+        setLoading(true);
+        // console.log("Converting MusicXML files...");
         try {
             const response = await fetch('http://localhost:5000/convert/xml', {
                 method: 'POST',
@@ -78,6 +94,8 @@ export default function Home() {
             console.error('Error: ', error);
             alert('Error creating BRF files');
         }
+
+        setLoading(false);
     }
 
     return (
@@ -96,12 +114,13 @@ export default function Home() {
             <button
                 // className="cursor-pointer m-6 px-4 py-2 bg-blue-500 hover:bg-blue-700 text-white font-bold rounded transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-110"
                 className={`${Object.keys(fileMap).length == 0 ? "cursor-not-allowed" : "cursor-pointer"} m-6 px-4 py-2 bg-blue-500 hover:bg-blue-700 text-white font-bold rounded transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-110`}
-                disabled={Object.keys(fileMap).length == 0} onClick={() => convertMSCZ(Object.keys(fileMap))}
+                disabled={Object.keys(fileMap).length == 0 || loading} 
+                onClick={() => convertMSCZ(Object.keys(fileMap))}
             >
                 Convert!
             </button>
 
-            <FileGrid filePairs={fileMap}/>
+            <FileGrid filePairs={fileMap} loading={loading}/>
         </div>
     );
 }

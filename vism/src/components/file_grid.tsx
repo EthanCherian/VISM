@@ -1,10 +1,11 @@
 import React from 'react';
 
 interface FileGridProps {
-    filePairs: Record<string, string>;      // MSCZ file name => BRF file name
+    filePairs: Record<string, string | null>;      // MSCZ file name => BRF file name
+    loading?: boolean;
 }
 
-const FileGrid: React.FC<FileGridProps> = ({ filePairs }) => {
+const FileGrid: React.FC<FileGridProps> = ({ filePairs, loading }) => {
     return (
         <div className="flex flex-col container items-center justify-center w-1/2 mx-auto py-4 border bg-white border-gray-300 dark:bg-gray-800 dark:border-gray-600 rounded-lg shadow-sm">
             <h2 className="text-xl underline font-semibold mb-4">Processed Files</h2>
@@ -25,7 +26,7 @@ const FileGrid: React.FC<FileGridProps> = ({ filePairs }) => {
                                         Download Processed File
                                     </a>
                                 ) : (
-                                    "Waiting to process..."
+                                    loading ? "Converting..." : "Waiting to process..." 
                                 )}
                             </td>
                         </tr>
