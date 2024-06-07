@@ -1,5 +1,6 @@
 'use client';
 import { useState } from "react";
+import Navbar from "@/components/navbar";
 import FileUploader from "@/components/file_upload";
 import FileGrid from "@/components/file_grid";
 
@@ -81,16 +82,12 @@ export default function Home() {
 
     return (
         <div className="flex flex-col items-center justify-center">
-            <div className="text-3xl underline font-bold my-8">
-                Welcome to Visually Impaired Sheet Music! (VISM)
-            </div>
-
-            <div className="text-lg">
+            <div className="text-lg py-6">
                 This page allows you to convert MuseScore (.mscz) files to Braille (.brf) files.
-                <ul className="list-disc list-inside my-6">
-                    <li className="mx-1">Upload your .mscz files</li>
-                    <li className="mx-1">Press "Convert!"</li>
-                    <li className="mx-1">Download resulting .brf files</li>
+                <ul className="list-disc list-inside my-4">
+                    <li className="px-5 mx-1">Upload your .mscz files</li>
+                    <li className="px-5 mx-1">Press "Convert!"</li>
+                    <li className="px-5 mx-1">Download resulting .brf files</li>
                 </ul>
             </div>
 
