@@ -1,5 +1,6 @@
 'use client';
 import { useState } from "react";
+import { API_LINK } from "@/utils/constants";
 import FileUploader from "@/components/file_upload";
 import FileGrid from "@/components/file_grid";
 
@@ -26,7 +27,7 @@ export default function Home() {
         });
     
         try {
-            const response = await fetch('http://localhost:5000/upload', {
+            const response = await fetch(API_LINK + '/upload', {
                 method: 'POST',
                 body: formData,
             });
@@ -50,7 +51,7 @@ export default function Home() {
         filenames = filenames.filter((filename) => !fileMap[filename]);
         
         try {
-            const response = await fetch('http://localhost:5000/convert/mscz', {
+            const response = await fetch(API_LINK + '/convert/mscz', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -73,7 +74,7 @@ export default function Home() {
         setLoading(true);
         // console.log("Converting MusicXML files...");
         try {
-            const response = await fetch('http://localhost:5000/convert/xml', {
+            const response = await fetch(API_LINK + '/convert/xml', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

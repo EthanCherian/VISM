@@ -1,8 +1,10 @@
-from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify, send_from_directory, send_file
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
 import subprocess
 import os
+import zipfile
+import io
 
 from utils.parseXML import convertMusicXML
 
@@ -39,7 +41,7 @@ def upload_files():
             return jsonify({ 'message': 'Invalid file type' }), 400
         
     return jsonify({ 'message': f'{len(files)} files uploaded successfully' }), 200
-    
+
 @app.route('/convert/mscz', methods=['POST'])
 def convert_mscz():
     filenames = request.json.get('filenames', [])
@@ -76,6 +78,29 @@ def convert_xml():
 def download_file(filename):
     print("Downloading file: " + filename)
     return send_from_directory(app.config['OUTPUT_FOLDER'], filename)
+
+@app.route('/download/multiple', methods=['POST'])
+def download_multiple_files():
+    file_names = request.json.get('filenames', [])
+    print("Downloading multiple files: ", file_names)
+
+    # Create a byte stream to hold the ZIP file
+    zip_buffer = io.BytesIO()
+    
+    with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zip_file:
+        for filename in file_names:
+            file_path = os.path.join(app.config['OUTPUT_FOLDER'], filename)
+            if os.path.exists(file_path):
+                # Add file to zip
+                zip_file.write(file_path, arcname=filename)
+            else:
+                print(f"File not found: {filename}")
+
+    # Move the pointer of the BytesIO object to the start
+    zip_buffer.seek(0)
+
+    # Send the ZIP file
+    return send_file(zip_buffer, mimetype='application/zip', as_attachment=True, download_name="braille_files.zip")
 
 if __name__ == '__main__':
     app.run(debug=True)
