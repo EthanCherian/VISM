@@ -23,7 +23,7 @@ const FileGrid: React.FC<FileGridProps> = ({ filePairs, loading }) => {
                 },
                 body: JSON.stringify({ filenames: outputFiles }),
             });
-            // do the rest of ChatGPT's code here
+            
             const blob = await result.blob();
 
             const url = URL.createObjectURL(blob);
