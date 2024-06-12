@@ -7,9 +7,12 @@ import zipfile
 import io
 
 from utils.parseXML import convertMusicXML
+from utils.dots_music import convert_dot_list
 
 app = Flask(__name__)
 CORS(app)
+
+# ------------------- SETTINGS + INITIALIZATION -------------------
 app.config['UPLOAD_FOLDER'] = 'uploads/'                # folder for uploaded files
 app.config['TEMP_FOLDER'] = 'temp/'                     # folder for intermediate files
 app.config['OUTPUT_FOLDER'] = 'output/'                 # folder for output files
@@ -22,7 +25,10 @@ if not os.path.exists(app.config['TEMP_FOLDER']):
     os.makedirs(app.config['TEMP_FOLDER'])
 if not os.path.exists(app.config['OUTPUT_FOLDER']):
     os.makedirs(app.config['OUTPUT_FOLDER'])
+# ----------------- END SETTINGS + INITIALIZATION -----------------
 
+
+# ------------------------- MSCZ_BRAILLE --------------------------
 # check if file is allowed
 def is_mscz(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() == 'mscz'
@@ -101,6 +107,21 @@ def download_multiple_files():
 
     # Send the ZIP file
     return send_file(zip_buffer, mimetype='application/zip', as_attachment=True, download_name="braille_files.zip")
+
+
+# ---------------------- INTERACTIVE_BRAILLE ----------------------
+@app.route('/dots_to_music', methods=['POST'])
+def dots_to_music():
+    dots_bool = request.json.get('dots', [])
+    print(dots_bool)
+    
+    result = convert_dot_list(dots_bool)
+    print(result)
+    return result
+
+@app.route('/music_to_dots', methods=['POST'])
+def music_to_dots():
+    pass
 
 if __name__ == '__main__':
     app.run(debug=True)
