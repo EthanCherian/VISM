@@ -113,7 +113,7 @@ def download_multiple_files():
 @app.route('/dots_to_music', methods=['POST'])
 def dots_to_music():
     dots_bool = request.json.get('dots', [])
-    print(dots_bool)
+    # print(dots_bool)
     
     result = convert_dot_list(dots_bool)
     print(result)

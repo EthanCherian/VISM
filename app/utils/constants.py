@@ -33,7 +33,7 @@ DURATIONS_MUSIC = ['EIGHTH', 'QUARTER', 'HALF', 'WHOLE']
 DURATIONS_DOT = [ [], [6], [3], [3, 6] ]
 
 # rests (eighth --> whole)
-RESTS_DOT = [[1, 3, 4, 5], [1, 2, 3, 6], [1, 3, 6], [1, 3, 4]]
+RESTS_DOT = [[1, 3, 4, 6], [1, 2, 3, 6], [1, 3, 6], [1, 3, 4]]
 
 NOTES_MUSIC = ['C', 'D', 'E', 'F', 'G', 'A', 'B']
 NOTES_DOT = [
