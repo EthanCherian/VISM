@@ -20,6 +20,14 @@ export default function Home() {
         });
     };
 
+    const clearAll = () => {
+        setActiveDots([false, false, false, false, false, false]);
+        setNote('');
+        setDuration('');
+        setAccidental('');
+        setRest('');
+    }
+
     const convertDots = async (dots: [boolean, boolean, boolean, boolean, boolean, boolean]) => {
         try {
             const response = await fetch(API_LINK + '/dots_to_music', {
@@ -44,7 +52,12 @@ export default function Home() {
     return (
         <div className="flex flex-col justify-center items-center my-8">
             <BrailleGrid activeDots={activeDots} onDotToggle={toggleActive}/>
-            {/* <p>{note}<br/> {duration} <br/> {accidental} <br/> {rest}</p> */}
+
+            <button onClick={clearAll} 
+                className="mt-2 mb-6 px-4 py-2 bg-red-500 hover:bg-red-700 text-white font-bold rounded transition duration-300 ease-in-out"
+            >
+                Clear</button>
+
             <div className="flex flex-row items-center m-5">
                 <MusicIcon class="note" value={note}/>
                 <MusicIcon class="duration" value={duration}/>

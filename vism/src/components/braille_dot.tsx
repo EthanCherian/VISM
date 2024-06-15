@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 
 interface DotProps {
     id: number;
@@ -7,10 +7,13 @@ interface DotProps {
 }
 
 const BrailleDot: React.FC<DotProps> = ({ id, active, onSwitch }) => {
-    const [dotActive, setDotActive] = useState<boolean>(active ?? false);
+    useEffect(() => {
+        // re-render dot when active changes
+        // console.log(`Dot ${id} toggled to ${active}`);
+    }, [active]);
 
     const toggleActive = () => {
-        setDotActive(!dotActive);
+        active = !active;
     };
 
     return (
@@ -18,7 +21,7 @@ const BrailleDot: React.FC<DotProps> = ({ id, active, onSwitch }) => {
             <button
                 onClick={() => { toggleActive(); onSwitch && onSwitch(id); }}
                 className={`w-12 h-12 m-0 p-0 gap-0 rounded-full flex items-center justify-center transition duration-300 ease-in-out
-                            ${dotActive ? 'bg-blue-500 text-white' : 'bg-white text-blue-500 border-2 border-blue-500'}`}
+                            ${active ? 'bg-blue-500 text-white' : 'bg-white text-blue-500 border-2 border-blue-500'}`}
             >
                 {id}
             </button>
