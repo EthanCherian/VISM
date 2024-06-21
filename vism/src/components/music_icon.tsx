@@ -42,7 +42,7 @@ const MusicIcon: React.FC<MusicIconProps> = ({ class: type , value }) => {
         // isolate filename from each element of list of paths
         let reducedList = list.map((item) => item.split("/")[3].split(".")[0]);
         return reducedList;
-    }
+    };
 
     return (
         <div className="flex flex-col bg-gray-200 mx-4 mb-4 justify-start items-center h-24 w-24 space-y-1 py-0">

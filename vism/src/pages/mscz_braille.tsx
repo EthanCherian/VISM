@@ -113,7 +113,6 @@ export default function Home() {
             <FileUploader onFileUpload={onFileUpload}/>
 
             <button
-                // className="cursor-pointer m-6 px-4 py-2 bg-blue-500 hover:bg-blue-700 text-white font-bold rounded transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-110"
                 className={`${Object.keys(fileMap).length == 0 ? "cursor-not-allowed" : "cursor-pointer"} m-6 px-4 py-2 bg-blue-500 hover:bg-blue-700 text-white font-bold rounded transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-110`}
                 disabled={Object.keys(fileMap).length == 0 || loading} 
                 onClick={() => convertMSCZ(Object.keys(fileMap))}
